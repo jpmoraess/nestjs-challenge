@@ -7,7 +7,7 @@ import { UserHistoryQueryDto } from './dto/user-history-query.dto';
 export class NewsletterReadController {
     constructor(private readonly newsletterReadService: NewsletterReadService) { }
 
-    @Post('/track')
+    @Get('/track')
     async trackRead(@Query(new ValidationPipe({ transform: true })) query: TrackReadQueryDto) {
         return this.newsletterReadService.trackRead(query.email, query.id);
     }
