@@ -3,6 +3,9 @@ import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { NewsletterRead } from './newsletter.entity';
 import { UsersService } from 'src/users/users.service';
+import { UserReadHistoryDto } from './dto/user-read-history.dto';
+import { TopReaderDto } from './dto/top_reader.dto';
+import { TopNewsletterDto } from './dto/top_newsletter.dto';
 
 @Injectable()
 export class NewsletterReadService {
@@ -18,52 +21,59 @@ export class NewsletterReadService {
         await this.newsletterReadRepository.save(read);
     }
 
-    async getTopNewsletters() {
-        return this.newsletterReadRepository
+    async getTopNewsletters(): Promise<TopNewsletterDto[]> {
+        const query = `
+            SELECT r.newsletter_id, count(r.id) as total FROM newsletter_read AS r
+            GROUP BY r.newsletter_id
+            ORDER BY total DESC
+            LIMIT 5;
+        `;
+
+        const result = await this.entityManager.query(query);
+
+        return result.map((item) => {
+            return new TopNewsletterDto(item.newsletter_id, Number(item.total));
+        });
+        
+
+       /*  return this.newsletterReadRepository
             .createQueryBuilder('read')
             .select('read.newsletterId, count(read.id) as total')
             .groupBy('read.newsletterId')
             .orderBy('total', 'DESC')
             .limit(5)
-            .getRawMany()
+            .getRawMany() */
     }
 
-    async getTopReader() {
-        return this.newsletterReadRepository
+    async getTopReader(): Promise<TopReaderDto[]> {
+        const result = await this.newsletterReadRepository
             .createQueryBuilder('nr')
-            .select('nr.userId', 'userId')
-            .addSelect('COUNT(*) as total_reads')
+            .select('nr.userId', 'user_id')
+            .addSelect('COUNT(*) as total')
             .groupBy('nr.userId')
-            .orderBy('total_reads', 'DESC')
+            .orderBy('total', 'DESC')
             .limit(5)
             .getRawMany();
+
+            return result.map((item) => {
+                return new TopReaderDto(item.user_id, Number(item.total));
+            });
     }
 
-    async getUserReadHistory3(email: string) {
+    async getUserReadHistory(email: string): Promise<UserReadHistoryDto[]> {
         const user = await this.userService.findUserByEmail(email)
-        return this.newsletterReadRepository.find({
-            where: { userId: user.id },
-            select: ['newsletterId', 'readAt'],
-            order: { 'readAt': 'DESC' }
-        });
-    }
-
-    async getUserReadHistory(email: string) {
-        const user = await this.userService.findUserByEmail(email)
-
+      
         const query = `
             SELECT newsletter_id, read_at 
             FROM newsletter_read 
-            WHERE user_id = ${user.id}
+            WHERE user_id = $1
             ORDER BY read_at DESC;
         `;
 
-        return this.entityManager.query(query);
+        const result = await this.entityManager.query(query, [user.id]);
 
-       /*  return this.newsletterReadRepository.find({
-            where: { userId: user.id },
-            select: ['newsletterId', 'readAt'],
-            order: { 'readAt': 'DESC' }
-        }); */
+        return result.map((item) => {
+            return new UserReadHistoryDto(item.newsletter_id, item.read_at);
+        });
     }
 }

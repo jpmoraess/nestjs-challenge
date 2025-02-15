@@ -1,5 +1,5 @@
 ### TRACK READ ###
-POST http://localhost:3000/newsletter-read/track?email=john@gmail.com&id=1
+POST http://localhost:3000/newsletter-read/track?email=mario@gmail.com&id=10
 Accept: application/json
 Content-Type: application/json
 
@@ -12,5 +12,5 @@ GET http://localhost:3000/newsletter-read/top-readers
 Accept: application/json
 
 ### GET READ HISTORY BY USER ###
-GET http://localhost:3000/newsletter-read/user-history?email=john@gmail.com
+GET http://localhost:3000/newsletter-read/user-history?email=mario@gmail.com
 Accept: application/json
