@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 export class UsersService {
     constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
-    async findExistentOrInsert(email: string) {
+    async findExistentUserOrInsertNew(email: string) {
         let user = await this.userRepository.findOne({ where: { email } });
         if (!user) 
             user = await this.userRepository.save({ email });

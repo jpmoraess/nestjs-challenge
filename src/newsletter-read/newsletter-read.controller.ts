@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Query, ValidationPipe } from '@nestjs/common';
 import { NewsletterReadService } from './newsletter-read.service';
 import { TrackReadQueryDto } from './dto/track-read-query.dto';
+import { UserHistoryQueryDto } from './dto/user-history-query.dto';
 
 @Controller('newsletter-read')
 export class NewsletterReadController {
@@ -22,7 +23,7 @@ export class NewsletterReadController {
     }
 
     @Get('/user-history')
-    async userReadHistory(@Query('email') email: string) {
-        return this.newsletterReadService.getUserReadHistory(email);
+    async userReadHistory(@Query(new ValidationPipe({ transform: true })) query: UserHistoryQueryDto) {
+        return this.newsletterReadService.getUserReadHistory(query.email);
     }
 }

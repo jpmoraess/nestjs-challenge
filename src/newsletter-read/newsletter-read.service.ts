@@ -12,7 +12,7 @@ export class NewsletterReadService {
     ) { }
 
     async trackRead(email: string, newsletterId: string) {
-        const user = await this.userService.findExistentOrInsert(email);
+        const user = await this.userService.findExistentUserOrInsertNew(email);
         const read = this.newsletterReadRepository.create({ userId: user.id, newsletterId });
         await this.newsletterReadRepository.save(read);
     }
