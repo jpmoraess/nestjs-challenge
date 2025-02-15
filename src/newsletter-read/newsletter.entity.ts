@@ -6,16 +6,16 @@ export class NewsletterRead {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({name: 'newsletter_id'})
     newsletterId: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({name: 'read_at'})
     readAt: Date
 
     @ManyToOne(() => User)
-    @JoinColumn({ name: "userId" })
+    @JoinColumn({ name: "user_id" })
     user: User;
 
-    @Column()
+    @Column({name: 'user_id'})
     userId: number
 }

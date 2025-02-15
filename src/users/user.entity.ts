@@ -8,6 +8,6 @@ export class User {
     @Column({unique: true})
     email: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({name: 'created_at'})
     createdAt: Date
 }

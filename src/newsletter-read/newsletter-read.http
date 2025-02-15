@@ -1,5 +1,5 @@
 ### TRACK READ ###
-POST http://localhost:3000/newsletter-read/track?email=mariagmail.com&id=2
+POST http://localhost:3000/newsletter-read/track?email=maria@gmail.com&id=3
 Accept: application/json
 Content-Type: application/json
 
