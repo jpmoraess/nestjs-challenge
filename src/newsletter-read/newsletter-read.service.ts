@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { NewsletterRead } from './newsletter.entity';
 import { UsersService } from 'src/users/users.service';
 
@@ -8,7 +8,8 @@ import { UsersService } from 'src/users/users.service';
 export class NewsletterReadService {
     constructor(
         private readonly userService: UsersService,
-        @InjectRepository(NewsletterRead) private newsletterReadRepository: Repository<NewsletterRead>
+        @InjectRepository(NewsletterRead) private newsletterReadRepository: Repository<NewsletterRead>,
+        @InjectEntityManager() private readonly entityManager: EntityManager
     ) { }
 
     async trackRead(email: string, newsletterId: string) {
@@ -38,12 +39,31 @@ export class NewsletterReadService {
             .getRawMany();
     }
 
-    async getUserReadHistory(email: string) {
+    async getUserReadHistory3(email: string) {
         const user = await this.userService.findUserByEmail(email)
         return this.newsletterReadRepository.find({
             where: { userId: user.id },
             select: ['newsletterId', 'readAt'],
             order: { 'readAt': 'DESC' }
         });
+    }
+
+    async getUserReadHistory(email: string) {
+        const user = await this.userService.findUserByEmail(email)
+
+        const query = `
+            SELECT newsletter_id, read_at 
+            FROM newsletter_read 
+            WHERE user_id = ${user.id}
+            ORDER BY read_at DESC;
+        `;
+
+        return this.entityManager.query(query);
+
+       /*  return this.newsletterReadRepository.find({
+            where: { userId: user.id },
+            select: ['newsletterId', 'readAt'],
+            order: { 'readAt': 'DESC' }
+        }); */
     }
 }
