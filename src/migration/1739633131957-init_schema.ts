@@ -19,6 +19,8 @@ export class InitSchema1739633131957 implements MigrationInterface {
             user_id integer not null,
             CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES "user" (id) ON DELETE CASCADE
             );
+
+            CREATE INDEX idx_newsletter_user_id ON public."newsletter_read"(user_id);
         `);
     }
 
