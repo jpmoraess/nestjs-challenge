@@ -1,0 +1,16 @@
+### TRACK READ ###
+POST http://localhost:3000/newsletter-read/track?email=andressa@gmail.com&newsletter_id=10
+Accept: application/json
+Content-Type: application/json
+
+### GET TOP NEWSLETTERS ###
+GET http://localhost:3000/newsletter-read/top-newsletters
+Accept: application/json
+
+### GET TOP READERS ###
+GET http://localhost:3000/newsletter-read/top-readers
+Accept: application/json
+
+### GET READ HISTORY BY USER ###
+GET http://localhost:3000/newsletter-read/user-history?email=andressa@gmail.com
+Accept: application/json
