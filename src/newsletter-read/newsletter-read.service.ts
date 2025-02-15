@@ -8,7 +8,7 @@ import { UsersService } from 'src/users/users.service';
 export class NewsletterReadService {
     constructor(
         private readonly userService: UsersService,
-        @InjectRepository(NewsletterRead) private newsletterReadRepository: Repository<NewsletterRead>,
+        @InjectRepository(NewsletterRead) private readonly newsletterReadRepository: Repository<NewsletterRead>,
         @InjectEntityManager() private readonly entityManager: EntityManager
     ) { }
 
