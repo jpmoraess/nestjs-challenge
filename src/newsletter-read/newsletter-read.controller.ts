@@ -1,13 +1,14 @@
-import { Controller, Get, Post, Query } from '@nestjs/common';
+import { Controller, Get, Post, Query, ValidationPipe } from '@nestjs/common';
 import { NewsletterReadService } from './newsletter-read.service';
+import { TrackReadQueryDto } from './dto/track-read-query.dto';
 
 @Controller('newsletter-read')
 export class NewsletterReadController {
     constructor(private readonly newsletterReadService: NewsletterReadService) { }
 
     @Post('/track')
-    async trackRead(@Query('email') email: string, @Query('newsletter_id') newsletterId: string) {
-        return this.newsletterReadService.trackRead(email, newsletterId);
+    async trackRead(@Query(new ValidationPipe({ transform: true })) query: TrackReadQueryDto) {
+        return this.newsletterReadService.trackRead(query.email, query.id);
     }
 
     @Get('/top-newsletters')
